@@ -1,29 +1,47 @@
 import { useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, FlatList } from "react-native";
 import axios from "axios";
 import useAuth from "../hooks/useAuth";
 
+type Task = {
+    id: number;
+    title: string;
+    description: string;
+    done: boolean;
+};
+
 const Tasks = () => {
-    const [tasks, satTasks] = useState([])
-    const { token } = useAuth()
+    const [tasks, setTasks] = useState<Task[]>([]);
+    const { token } = useAuth();
+
     async function getTasks() {
-        const response = await axios.get('http://localhost:3333/tasks', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        try {
+            const response = await axios.get("http://localhost:3333/tasks", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setTasks(response.data);
+        } catch (error) {
+            console.error("Error fetching tasks:", error);
+        }
     }
+
     useEffect(() => {
-        getTasks()
-    },) 
-    return(
+        getTasks();
+    }, []);
+
+    return (
         <View>
-            <Text>Tasks</Text>
-            {tasks.map(task => (
-                <Text key={task.id}>{task.title}</Text>
-            ))}
+            <FlatList
+                data={tasks}
+                keyExtractor={(item) => String(item.id)}
+                renderItem={({ item }) => (
+                    <Text>{item.title}</Text>
+                )}
+            />
         </View>
     );
-}
+};
 
 export default Tasks;

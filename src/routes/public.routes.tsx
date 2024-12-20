@@ -1,11 +1,19 @@
-import { TextInput, View } from "react-native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Login from "../screens/login";
+
+
 
 const PublicRoutes = () => {
-    <View>
-        <TextInput>
-            PublicRoutes
-        </TextInput>
-    </View>
-}
+    const { Navigator, Screen } = createNativeStackNavigator();
+    return (
+        <Navigator>
+            <Screen 
+                name="Login" 
+                component={Login} 
+                options={{ headerShown: false }}
+            />
+        </Navigator>
+    );
+};
 
 export default PublicRoutes;
